@@ -4,11 +4,22 @@ namespace App\Http\Controllers;
 
 use Auth;
 use App\Post;
+use Validator;
 use Illuminate\Http\Request;
 use App\Http\Resources\PostCollection;
-
-class PostController extends Controller
+use App\Http\Controllers\BaseController as BaseController;
+class PostController extends BaseController
 {
+    protected function validateThis(Request $request)
+    {
+        $rules = [
+            'user_id' => 'required',
+            'title' => 'required|max:255',
+            'desc' => 'required|max:255',
+        ];
+        return Validator::make($request->all(), $rules);
+    }
+
     /**
      * Display a listing of the resource.
      *
@@ -16,20 +27,8 @@ class PostController extends Controller
      */
     public function index()
     {
-        return             $user = Auth::user();
-        return Todo::where('user_id', auth()->user()->id)->get();
-
-        return new PostCollection(Post::all());
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
+        $data = new PostCollection(Post::where('user_id', auth()->user()->id)->get());
+        return $this->sendResponse($data, 200);
     }
 
     /**
@@ -40,25 +39,17 @@ class PostController extends Controller
      */
     public function store(Request $request)
     {
-        $post = new Post([
-            'title' => $request->get('title'),
-            'desc' => $request->get('desc')
-        ]);
+        $validator = $this->validateThis($request);
+        if($validator->fails()){
+            return $this->sendError($validator->errors(), 422);
+        }
 
-        $post->save();
-        return response()->json('success');
-    
-    }
-
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
-    {
-        //
+        $post = Post::create($request->all());
+        if ($post) {
+            return $this->sendResponse($post, 'Post has been Added!', 200);
+        } else {
+            return $this->sendError('Something went wrong, try again', 200);
+        }  
     }
 
     /**
@@ -70,7 +61,11 @@ class PostController extends Controller
     public function edit($id)
     {
         $post = Post::find($id);
-        return response()->json($post);
+        if ($post) {
+            return $this->sendResponse($post, 200);
+        } else {
+            return $this->sendError('This Post is Not Found', 200);
+        } 
     }
 
     /**
@@ -80,12 +75,20 @@ class PostController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, Post $post)
     {
-        $post = Post::find($id);
-        $post->update($request->all());
-  
-        return response()->json('successfully updated');  
+        $validator = $this->validateThis($request, $post->id);
+
+        if($validator->fails()){            
+            return $this->sendError($validator->errors(), 422);
+        }
+
+        if ($post) {
+            $post->update($request->all());
+            return $this->sendResponse($post, 'Post has been Updated', 200);
+        } else {
+            return $this->sendError('This Post is Not Found', 200);
+        } 
     }
 
     /**
@@ -98,7 +101,7 @@ class PostController extends Controller
     {
         $post = Post::find($id);
         $post->delete();
-  
+        
         return response()->json('successfully deleted');  
     }
 }

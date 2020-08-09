@@ -43,18 +43,21 @@
       created() {
       this.user = JSON.parse(localStorage.getItem('user'));
       let uri = 'http://127.0.0.1:8000/api/post';
-      this.axios.get(uri).then(response => {
+      this.axios.get(uri, {
+        headers: { 'Authorization': `Bearer ${JSON.parse(localStorage.getItem('auth'))}`}
+      }).then(response => {
         this.posts = response.data.data;
       });
 
-      
     },
     methods: {
       deletePost(id)
       {
         let uri = `http://127.0.0.1:8000/api/post/${id}`;
-        this.axios.delete(uri).then(response => {
-          this.posts.splice(this.posts.indexOf(id), 1);
+        this.axios.delete(uri, {
+            headers: { 'Authorization': `Bearer ${JSON.parse(localStorage.getItem('auth'))}`}
+          }).then(response => {
+          this.posts.splice(this.posts.findIndex(player => player.id === id), 1);
         });
       }
     }

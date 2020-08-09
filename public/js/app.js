@@ -2018,21 +2018,40 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
-      post: {}
+      post: {
+        user_id: ''
+      },
+      user: null,
+      success: '',
+      error: []
     };
+  },
+  created: function created() {
+    this.user = JSON.parse(localStorage.getItem('user'));
+    this.post.user_id = this.user.id;
   },
   methods: {
     addPost: function addPost() {
       var _this = this;
 
       var uri = 'http://127.0.0.1:8000/api/post';
-      this.axios.post(uri, this.post).then(function (response) {
-        _this.$router.push({
-          name: 'posts'
-        });
+      this.axios.post(uri, this.post, {
+        headers: {
+          'Authorization': "Bearer ".concat(JSON.parse(localStorage.getItem('auth')))
+        }
+      }).then(function (response) {
+        _this.success = response.data.message;
+      })["catch"](function (error) {
+        return _this.error = error.response.data.message;
       });
     }
   }
@@ -2207,18 +2226,30 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
-      post: {}
+      post: {},
+      success: '',
+      error: []
     };
   },
   created: function created() {
     var _this = this;
 
     var uri = "http://127.0.0.1:8000/api/post/".concat(this.$route.params.id, "/edit");
-    this.axios.get(uri).then(function (response) {
-      _this.post = response.data;
+    this.axios.get(uri, {
+      headers: {
+        'Authorization': "Bearer ".concat(JSON.parse(localStorage.getItem('auth')))
+      }
+    }).then(function (response) {
+      _this.post = response.data.data;
     });
   },
   methods: {
@@ -2226,11 +2257,15 @@ __webpack_require__.r(__webpack_exports__);
       var _this2 = this;
 
       var uri = "http://127.0.0.1:8000/api/post/".concat(this.$route.params.id);
-      this.axios.put(uri, this.post).then(function (response) {
-        _this2.$router.push({
-          name: 'posts'
-        });
-      });
+      this.axios.put(uri, this.post, {
+        headers: {
+          'Authorization': "Bearer ".concat(JSON.parse(localStorage.getItem('auth')))
+        }
+      }).then(function (response) {
+        _this2.success = response.data.message;
+      })["catch"](function (error) {
+        return _this2.error = error.response.data.message;
+      }); //this.$router.push({name: 'posts'});
     }
   }
 });
@@ -2323,7 +2358,11 @@ __webpack_require__.r(__webpack_exports__);
 
     this.user = JSON.parse(localStorage.getItem('user'));
     var uri = 'http://127.0.0.1:8000/api/post';
-    this.axios.get(uri).then(function (response) {
+    this.axios.get(uri, {
+      headers: {
+        'Authorization': "Bearer ".concat(JSON.parse(localStorage.getItem('auth')))
+      }
+    }).then(function (response) {
       _this.posts = response.data.data;
     });
   },
@@ -2332,8 +2371,14 @@ __webpack_require__.r(__webpack_exports__);
       var _this2 = this;
 
       var uri = "http://127.0.0.1:8000/api/post/".concat(id);
-      this.axios["delete"](uri).then(function (response) {
-        _this2.posts.splice(_this2.posts.indexOf(id), 1);
+      this.axios["delete"](uri, {
+        headers: {
+          'Authorization': "Bearer ".concat(JSON.parse(localStorage.getItem('auth')))
+        }
+      }).then(function (response) {
+        _this2.posts.splice(_this2.posts.findIndex(function (player) {
+          return player.id === id;
+        }), 1);
       });
     }
   }
@@ -38703,6 +38748,14 @@ var render = function() {
   return _c("div", { staticStyle: { margin: "auto 0" } }, [
     _c("h1", [_vm._v("Create A Post")]),
     _vm._v(" "),
+    _vm.success
+      ? _c("ul", { staticClass: "list-unstyle" }, [
+          _c("li", { staticClass: "alert alert-success" }, [
+            _vm._v(_vm._s(_vm.success))
+          ])
+        ])
+      : _vm._e(),
+    _vm._v(" "),
     _c(
       "form",
       {
@@ -38739,7 +38792,13 @@ var render = function() {
                     _vm.$set(_vm.post, "title", $event.target.value)
                   }
                 }
-              })
+              }),
+              _vm._v(" "),
+              _vm.error.title
+                ? _c("span", { staticClass: "text-danger text-sm" }, [
+                    _vm._v(_vm._s(_vm.error.title))
+                  ])
+                : _vm._e()
             ])
           ])
         ]),
@@ -38747,7 +38806,7 @@ var render = function() {
         _c("div", { staticClass: "row" }, [
           _c("div", { staticClass: "col-md-6" }, [
             _c("div", { staticClass: "form-group" }, [
-              _c("label", [_vm._v("Post Body:")]),
+              _c("label", [_vm._v("Post Description:")]),
               _vm._v(" "),
               _c("textarea", {
                 directives: [
@@ -38769,7 +38828,13 @@ var render = function() {
                     _vm.$set(_vm.post, "desc", $event.target.value)
                   }
                 }
-              })
+              }),
+              _vm._v(" "),
+              _vm.error.desc
+                ? _c("span", { staticClass: "text-danger text-sm" }, [
+                    _vm._v(_vm._s(_vm.error.desc))
+                  ])
+                : _vm._e()
             ])
           ])
         ]),
@@ -39068,6 +39133,14 @@ var render = function() {
   return _c("div", [
     _c("h1", [_vm._v("Edit Post")]),
     _vm._v(" "),
+    _vm.success
+      ? _c("ul", { staticClass: "list-unstyle" }, [
+          _c("li", { staticClass: "alert alert-success" }, [
+            _vm._v(_vm._s(_vm.success))
+          ])
+        ])
+      : _vm._e(),
+    _vm._v(" "),
     _c(
       "form",
       {
@@ -39104,7 +39177,13 @@ var render = function() {
                     _vm.$set(_vm.post, "title", $event.target.value)
                   }
                 }
-              })
+              }),
+              _vm._v(" "),
+              _vm.error.title
+                ? _c("span", { staticClass: "text-danger text-sm" }, [
+                    _vm._v(_vm._s(_vm.error.title))
+                  ])
+                : _vm._e()
             ])
           ])
         ]),
@@ -39134,7 +39213,13 @@ var render = function() {
                     _vm.$set(_vm.post, "desc", $event.target.value)
                   }
                 }
-              })
+              }),
+              _vm._v(" "),
+              _vm.error.desc
+                ? _c("span", { staticClass: "text-danger text-sm" }, [
+                    _vm._v(_vm._s(_vm.error.desc))
+                  ])
+                : _vm._e()
             ])
           ])
         ]),
