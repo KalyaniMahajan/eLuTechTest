@@ -1,6 +1,6 @@
 <template>
   <div>
-      <h1>Posts Listing</h1>
+      <h1>Posts Listing - {{user.name}}</h1>
         <div class="row">
           <div class="col-md-10"></div>
           <div class="col-md-2">
@@ -36,14 +36,18 @@
   export default {
       data() {
         return {
-          posts: []
+          posts: [],
+          user: null
         }
       },
       created() {
+      this.user = JSON.parse(localStorage.getItem('user'));
       let uri = 'http://127.0.0.1:8000/api/post';
       this.axios.get(uri).then(response => {
         this.posts = response.data.data;
       });
+
+      
     },
     methods: {
       deletePost(id)

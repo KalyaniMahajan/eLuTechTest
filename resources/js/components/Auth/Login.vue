@@ -39,6 +39,7 @@
         this.axios.post(uri, this.post).then((response) => {
            //console.log(response)
             localStorage.setItem("auth", JSON.stringify(response.data.token))
+            localStorage.setItem("user", JSON.stringify(response.data.user))
             this.$router.push({path: '/posts'});
         });
       }

@@ -40,7 +40,8 @@ class AuthController extends Controller
             $token = $user->createToken($user->email.'-'.now());
 
             return response()->json([
-                'token' => $token->accessToken
+                'token' => $token->accessToken,
+                'user' => $user,
             ]);
         }
     }

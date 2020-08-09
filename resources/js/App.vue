@@ -53,7 +53,7 @@
       },
       created() {
         this.auth = JSON.parse(localStorage.getItem('auth'))
-        console.log(this.auth)
+        //console.log(this.auth)
       },
       methods: {
         logout() {

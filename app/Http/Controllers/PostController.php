@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Auth;
 use App\Post;
 use Illuminate\Http\Request;
 use App\Http\Resources\PostCollection;
@@ -15,6 +16,9 @@ class PostController extends Controller
      */
     public function index()
     {
+        return             $user = Auth::user();
+        return Todo::where('user_id', auth()->user()->id)->get();
+
         return new PostCollection(Post::all());
     }
 

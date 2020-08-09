@@ -1961,8 +1961,7 @@ __webpack_require__.r(__webpack_exports__);
     };
   },
   created: function created() {
-    this.auth = JSON.parse(localStorage.getItem('auth'));
-    console.log(this.auth);
+    this.auth = JSON.parse(localStorage.getItem('auth')); //console.log(this.auth)
   },
   methods: {
     logout: function logout() {
@@ -2092,6 +2091,7 @@ __webpack_require__.r(__webpack_exports__);
       this.axios.post(uri, this.post).then(function (response) {
         //console.log(response)
         localStorage.setItem("auth", JSON.stringify(response.data.token));
+        localStorage.setItem("user", JSON.stringify(response.data.user));
 
         _this.$router.push({
           path: '/posts'
@@ -2314,12 +2314,14 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
-      posts: []
+      posts: [],
+      user: null
     };
   },
   created: function created() {
     var _this = this;
 
+    this.user = JSON.parse(localStorage.getItem('user'));
     var uri = 'http://127.0.0.1:8000/api/post';
     this.axios.get(uri).then(function (response) {
       _this.posts = response.data.data;
@@ -39220,7 +39222,7 @@ var render = function() {
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
   return _c("div", [
-    _c("h1", [_vm._v("Posts Listing")]),
+    _c("h1", [_vm._v("Posts Listing - " + _vm._s(_vm.user.name))]),
     _vm._v(" "),
     _c("div", { staticClass: "row" }, [
       _c("div", { staticClass: "col-md-10" }),
