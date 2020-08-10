@@ -7,6 +7,7 @@
           <div class="form-group">
             <label>Email</label>
             <input type="email" class="form-control" v-model="post.email">
+            <span class="text-danger text-sm" v-if="error.email">{{ error.email }}</span>
           </div>
         </div>
       </div>
@@ -15,6 +16,7 @@
           <div class="form-group">
             <label>Password</label>
             <input type="password" class="form-control" v-model="post.password">
+            <span class="text-danger text-sm" v-if="error.password">{{ error.password }}</span>
           </div>
         </div>
       </div>
@@ -30,7 +32,8 @@
     export default {
         data(){
         return {
-          post: {}
+          post: {},
+          error: [],
         }
     },
     methods: {
@@ -40,8 +43,10 @@
            //console.log(response)
             localStorage.setItem("auth", JSON.stringify(response.data.token))
             localStorage.setItem("user", JSON.stringify(response.data.user))
-            this.$router.push({path: '/posts'});
-        });
+            //this.$router.push({path: '/posts'});
+            window.location.href = 'http://127.0.0.1:8000/posts';
+        }).then((response) => { this.success = response.data.errors;
+        }).catch(error => this.error = error.response.data.errors);
       }
     }
   }

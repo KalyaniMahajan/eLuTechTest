@@ -1968,13 +1968,15 @@ __webpack_require__.r(__webpack_exports__);
       var _this = this;
 
       var uri = 'http://127.0.0.1:8000/api/logout';
-      this.axios.post(uri, this.post).then(function (response) {
+      this.axios.post(uri, {
+        headers: {
+          'Authorization': "Bearer ".concat(JSON.parse(localStorage.getItem('auth')))
+        }
+      }).then(function (response) {
         _this.auth = null;
-        localStorage.clear();
+        localStorage.clear(); //this.$router.push({name: 'login'});
 
-        _this.$router.push({
-          name: 'login'
-        });
+        window.location.href = 'http://127.0.0.1:8000/login';
       });
     }
   }
@@ -2096,10 +2098,13 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
-      post: {}
+      post: {},
+      error: []
     };
   },
   methods: {
@@ -2110,11 +2115,13 @@ __webpack_require__.r(__webpack_exports__);
       this.axios.post(uri, this.post).then(function (response) {
         //console.log(response)
         localStorage.setItem("auth", JSON.stringify(response.data.token));
-        localStorage.setItem("user", JSON.stringify(response.data.user));
+        localStorage.setItem("user", JSON.stringify(response.data.user)); //this.$router.push({path: '/posts'});
 
-        _this.$router.push({
-          path: '/posts'
-        });
+        window.location.href = 'http://127.0.0.1:8000/posts';
+      }).then(function (response) {
+        _this.success = response.data.errors;
+      })["catch"](function (error) {
+        return _this.error = error.response.data.errors;
       });
     }
   }
@@ -2168,10 +2175,14 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
-      post: {}
+      post: {},
+      error: []
     };
   },
   methods: {
@@ -2183,6 +2194,10 @@ __webpack_require__.r(__webpack_exports__);
         _this.$router.push({
           name: 'login'
         });
+      }).then(function (response) {
+        _this.success = response.data.errors;
+      })["catch"](function (error) {
+        return _this.error = error.response.data.errors;
       });
     }
   }
@@ -2346,6 +2361,7 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
@@ -2370,16 +2386,20 @@ __webpack_require__.r(__webpack_exports__);
     deletePost: function deletePost(id) {
       var _this2 = this;
 
-      var uri = "http://127.0.0.1:8000/api/post/".concat(id);
-      this.axios["delete"](uri, {
-        headers: {
-          'Authorization': "Bearer ".concat(JSON.parse(localStorage.getItem('auth')))
-        }
-      }).then(function (response) {
-        _this2.posts.splice(_this2.posts.findIndex(function (player) {
-          return player.id === id;
-        }), 1);
-      });
+      var reply = confirm("Are You Sure...?");
+
+      if (reply) {
+        var uri = "http://127.0.0.1:8000/api/post/".concat(id);
+        this.axios["delete"](uri, {
+          headers: {
+            'Authorization': "Bearer ".concat(JSON.parse(localStorage.getItem('auth')))
+          }
+        }).then(function (response) {
+          _this2.posts.splice(_this2.posts.findIndex(function (player) {
+            return player.id === id;
+          }), 1);
+        });
+      }
     }
   }
 });
@@ -38915,7 +38935,13 @@ var render = function() {
                     _vm.$set(_vm.post, "email", $event.target.value)
                   }
                 }
-              })
+              }),
+              _vm._v(" "),
+              _vm.error.email
+                ? _c("span", { staticClass: "text-danger text-sm" }, [
+                    _vm._v(_vm._s(_vm.error.email))
+                  ])
+                : _vm._e()
             ])
           ])
         ]),
@@ -38945,7 +38971,13 @@ var render = function() {
                     _vm.$set(_vm.post, "password", $event.target.value)
                   }
                 }
-              })
+              }),
+              _vm._v(" "),
+              _vm.error.password
+                ? _c("span", { staticClass: "text-danger text-sm" }, [
+                    _vm._v(_vm._s(_vm.error.password))
+                  ])
+                : _vm._e()
             ])
           ])
         ]),
@@ -39027,7 +39059,13 @@ var render = function() {
                     _vm.$set(_vm.post, "name", $event.target.value)
                   }
                 }
-              })
+              }),
+              _vm._v(" "),
+              _vm.error.name
+                ? _c("span", { staticClass: "text-danger text-sm" }, [
+                    _vm._v(_vm._s(_vm.error.name))
+                  ])
+                : _vm._e()
             ])
           ])
         ]),
@@ -39047,7 +39085,7 @@ var render = function() {
                   }
                 ],
                 staticClass: "form-control",
-                attrs: { type: "email" },
+                attrs: { type: "text" },
                 domProps: { value: _vm.post.email },
                 on: {
                   input: function($event) {
@@ -39057,7 +39095,13 @@ var render = function() {
                     _vm.$set(_vm.post, "email", $event.target.value)
                   }
                 }
-              })
+              }),
+              _vm._v(" "),
+              _vm.error.email
+                ? _c("span", { staticClass: "text-danger text-sm" }, [
+                    _vm._v(_vm._s(_vm.error.email))
+                  ])
+                : _vm._e()
             ])
           ])
         ]),
@@ -39087,7 +39131,13 @@ var render = function() {
                     _vm.$set(_vm.post, "password", $event.target.value)
                   }
                 }
-              })
+              }),
+              _vm._v(" "),
+              _vm.error.password
+                ? _c("span", { staticClass: "text-danger text-sm" }, [
+                    _vm._v(_vm._s(_vm.error.password))
+                  ])
+                : _vm._e()
             ])
           ])
         ]),
@@ -39333,48 +39383,50 @@ var render = function() {
     _c("table", { staticClass: "table table-hover" }, [
       _vm._m(0),
       _vm._v(" "),
-      _c(
-        "tbody",
-        _vm._l(_vm.posts, function(post) {
-          return _c("tr", { key: post.id }, [
-            _c("td", [_vm._v(_vm._s(post.id))]),
-            _vm._v(" "),
-            _c("td", [_vm._v(_vm._s(post.title))]),
-            _vm._v(" "),
-            _c("td", [_vm._v(_vm._s(post.desc))]),
-            _vm._v(" "),
-            _c(
-              "td",
-              [
-                _c(
-                  "router-link",
-                  {
-                    staticClass: "btn btn-sm btn-primary",
-                    attrs: { to: { name: "edit", params: { id: post.id } } }
-                  },
-                  [_vm._v("Edit")]
-                ),
+      _vm.posts != ""
+        ? _c(
+            "tbody",
+            _vm._l(_vm.posts, function(post) {
+              return _c("tr", { key: post.id }, [
+                _c("td", [_vm._v(_vm._s(post.id))]),
+                _vm._v(" "),
+                _c("td", [_vm._v(_vm._s(post.title))]),
+                _vm._v(" "),
+                _c("td", [_vm._v(_vm._s(post.desc))]),
                 _vm._v(" "),
                 _c(
-                  "button",
-                  {
-                    staticClass: "btn btn-sm btn-danger",
-                    on: {
-                      click: function($event) {
-                        $event.preventDefault()
-                        return _vm.deletePost(post.id)
-                      }
-                    }
-                  },
-                  [_vm._v("Delete")]
+                  "td",
+                  [
+                    _c(
+                      "router-link",
+                      {
+                        staticClass: "btn btn-sm btn-primary",
+                        attrs: { to: { name: "edit", params: { id: post.id } } }
+                      },
+                      [_vm._v("Edit")]
+                    ),
+                    _vm._v(" "),
+                    _c(
+                      "button",
+                      {
+                        staticClass: "btn btn-sm btn-danger",
+                        on: {
+                          click: function($event) {
+                            $event.preventDefault()
+                            return _vm.deletePost(post.id)
+                          }
+                        }
+                      },
+                      [_vm._v("Delete")]
+                    )
+                  ],
+                  1
                 )
-              ],
-              1
-            )
-          ])
-        }),
-        0
-      )
+              ])
+            }),
+            0
+          )
+        : _c("p", [_vm._v("Posts Not Found, Please Create Post first...!")])
     ])
   ])
 }

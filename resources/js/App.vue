@@ -58,10 +58,13 @@
       methods: {
         logout() {
             let uri = 'http://127.0.0.1:8000/api/logout';
-            this.axios.post(uri, this.post).then((response) => {
+            this.axios.post(uri, {
+              headers: { 'Authorization': `Bearer ${JSON.parse(localStorage.getItem('auth'))}`}
+            }).then((response) => {
               this.auth = null;
               localStorage.clear();
-              this.$router.push({name: 'login'});
+              //this.$router.push({name: 'login'});
+              window.location.href = 'http://127.0.0.1:8000/login';
             });
         }
       }

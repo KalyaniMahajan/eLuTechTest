@@ -17,7 +17,7 @@
                 <th>Actions</th>
             </tr>
             </thead>
-            <tbody>
+            <tbody v-if="posts != ''">
                 <tr v-for="post in posts" :key="post.id">
                     <td>{{ post.id }}</td>
                     <td>{{ post.title }}</td>
@@ -28,6 +28,7 @@
                     </td>
                 </tr>
             </tbody>
+            <p v-else>Posts Not Found, Please Create Post first...!</p>
         </table>
   </div>
 </template>
@@ -53,12 +54,15 @@
     methods: {
       deletePost(id)
       {
-        let uri = `http://127.0.0.1:8000/api/post/${id}`;
-        this.axios.delete(uri, {
-            headers: { 'Authorization': `Bearer ${JSON.parse(localStorage.getItem('auth'))}`}
-          }).then(response => {
-          this.posts.splice(this.posts.findIndex(player => player.id === id), 1);
-        });
+        const reply = confirm("Are You Sure...?");
+        if(reply) {
+          let uri = `http://127.0.0.1:8000/api/post/${id}`;
+          this.axios.delete(uri, {
+              headers: { 'Authorization': `Bearer ${JSON.parse(localStorage.getItem('auth'))}`}
+            }).then(response => {
+            this.posts.splice(this.posts.findIndex(player => player.id === id), 1);
+          });
+        }
       }
     }
   }

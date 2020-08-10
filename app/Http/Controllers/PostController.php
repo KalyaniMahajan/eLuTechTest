@@ -27,7 +27,8 @@ class PostController extends BaseController
      */
     public function index()
     {
-        $data = new PostCollection(Post::where('user_id', auth()->user()->id)->get());
+        $id = Auth::user()->id;
+        $data = new PostCollection(Post::where('user_id', $id)->get());
         return $this->sendResponse($data, 200);
     }
 
@@ -103,5 +104,10 @@ class PostController extends BaseController
         $post->delete();
         
         return response()->json('successfully deleted');  
+    }
+
+    public function logout()
+    {
+        Auth::logout();
     }
 }
