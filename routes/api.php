@@ -13,6 +13,6 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 
 Route::post('logout', 'Auth\AuthController@logout')->name('logout'); 
 Route::middleware('auth:api')->group(function () {
-    Route::resource('/post', 'PostController');
+    Route::resource('/post', 'PostController', ['except' => ['create', 'show']]);
 });
 

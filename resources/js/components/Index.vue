@@ -18,8 +18,8 @@
             </tr>
             </thead>
             <tbody v-if="posts != ''">
-                <tr v-for="post in posts" :key="post.id">
-                    <td>{{ post.id }}</td>
+                <tr v-for="(post, index) in posts" :key="index"  >
+                    <td>{{ index+1 }}</td>
                     <td>{{ post.title }}</td>
                     <td>{{ post.desc }}</td>
                     <td>

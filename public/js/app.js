@@ -39386,9 +39386,9 @@ var render = function() {
       _vm.posts != ""
         ? _c(
             "tbody",
-            _vm._l(_vm.posts, function(post) {
-              return _c("tr", { key: post.id }, [
-                _c("td", [_vm._v(_vm._s(post.id))]),
+            _vm._l(_vm.posts, function(post, index) {
+              return _c("tr", { key: index }, [
+                _c("td", [_vm._v(_vm._s(index + 1))]),
                 _vm._v(" "),
                 _c("td", [_vm._v(_vm._s(post.title))]),
                 _vm._v(" "),
